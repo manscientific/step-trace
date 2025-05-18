@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Piezo Voltage Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sparkles" id="sparkles"></div>
+    
+    <button class="chatbot-btn" id="chatbotBtn" onclick="window.open('http://127.0.0.1:5000', '_blank')">
+        <i class="fas fa-robot"></i> Chatbot
+    </button>
+    
+    <div class="connection-status" id="connectionStatus">
+        <span id="connectionDot">●</span>
+        <span id="connectionText">Connecting...</span>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bolt"></i> STEP TRACE</h1>
+            <button class="mode-toggle" id="modeToggle">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+        </header>
+        
+        <div class="data-display">
+            <div class="data-card">
+                <h2>Instant Voltage</h2>
+                <div class="data-value voltage-value" id="voltage">0.00</div>
+                <div class="data-unit">Volts (V)</div>
+            </div>
+            
+            <div class="data-card">
+                <h2>Energy Generated</h2>
+                <div class="data-value energy-value" id="energy">0.00</div>
+                <div class="data-unit">Microjoules (µJ)</div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">conversion</div>
+            </div>
+
+            <div class="data-card">
+                <h2>Tokens Earned</h2>
+                <div class="data-value token-value" id="tokens">0</div>
+                <div class="data-unit">Tokens</div>
+                <div class="token-info" id="tokenInfo">0.1 token per 100µJ</div>
+            </div>
+        </div>
+        
+        <div class="chart-row">
+            <div class="chart-container">
+                <h2><i class="fas fa-chart-line"></i> Voltage Readings</h2>
+                <canvas id="voltageChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h2><i class="fas fa-battery-three-quarters"></i> Energy Generation</h2>
+                <canvas id="energyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="control-btn" id="pauseResumeBtn">
+                <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="control-btn reset" id="resetBtn">
+                <i class="fas fa-redo"></i> Reset Graphs
+            </button>
+            <button class="control-btn token" id="claimTokenBtn">
+                <i class="fas fa-coins"></i> Claim Tokens
+            </button>
+        </div>
+        
+        <div class="status" id="status">
+            Last updated: <span id="lastUpdate">Never</span>
+            <div id="ipAddress" style="margin-top: 5px;">IP: Loading...</div>
+        </div>
+    </div>
+
+    <!-- Token Reward Popup -->
+    <div class="overlay" id="overlay"></div>
+    <div class="token-reward" id="tokenRewardPopup">
+        <h3>Token Reward Claimed!</h3>
+        <p>You've earned <span id="rewardAmount">0</span> tokens for your energy generation.</p>
+        <p>Total tokens: <span id="totalTokensAfterClaim">0</span></p>
+        <button class="token-reward-btn" id="closeRewardPopup">Awesome!</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

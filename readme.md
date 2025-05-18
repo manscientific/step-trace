@@ -1,0 +1,1 @@
+1.requirements are to run the chatbot on your system

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joule - Your Sustainability Assistant</title>
+    <style>
+        :root {
+            --primary-color: #25D366;
+            --secondary-color: #128C7E;
+            --light-color: #DCF8C6;
+            --dark-color: #075E54;
+            --white: #ffffff;
+            --gray: #ece5dd;
+            --dark-gray: #7a7a7a;
+            --chat-bg: #e5ddd5;
+            --message-received-bg: #ffffff;
+            --message-sent-bg: #DCF8C6;
+            --header-text: #ffffff;
+            --input-bg: #ffffff;
+            --input-text: #000000;
+            --suggestion-bg: #ffffff;
+            --info-text: #7a7a7a;
+        }
+        
+        .dark-mode {
+            --primary-color: #25D366;
+            --secondary-color: #075E54;
+            --light-color: #056162;
+            --dark-color: #128C7E;
+            --white: #0c1317;
+            --gray: #0b141a;
+            --dark-gray: #8696a0;
+            --chat-bg: #0b141a;
+            --message-received-bg: #202c33;
+            --message-sent-bg: #056162;
+            --header-text: #e9edef;
+            --input-bg: #2a3942;
+            --input-text: #e9edef;
+            --suggestion-bg: #202c33;
+            --info-text: #8696a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            background-color: var(--chat-bg);
+            background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e7195b6b733d9110b408f075d.png');
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 90vh;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: var(--secondary-color);
+            color: var(--header-text);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .chat-header h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .chat-header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: var(--gray);
+            background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e7195b6b733d9110b408f075d.png');
+            background-blend-mode: overlay;
+        }
+        
+        .dark-mode .chat-messages {
+            background-image: url('https://web.whatsapp.com/img/bg-chat-tile-dark_04ccac0ecd6921adb587243d6cef6b8a.png');
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 7.5px;
+            position: relative;
+            word-wrap: break-word;
+            line-height: 1.4;
+            color: var(--input-text);
+        }
+        
+        .received {
+            background-color: var(--message-received-bg);
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+        
+        .sent {
+            background-color: var(--message-sent-bg);
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            margin-left: auto;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: var(--dark-gray);
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--white);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            outline: none;
+            font-size: 14px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
+        }
+        
+        .chat-input button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .chat-input button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .chat-input button i {
+            font-size: 20px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            padding: 10px 15px;
+            background-color: var(--message-received-bg);
+            border-radius: 7.5px;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--dark-gray);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--input-text);
+            font-size: 14px;
+        }
+        
+        .energy-icon {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+        
+        .suggestion-chip {
+            display: inline-block;
+            background-color: var(--suggestion-bg);
+            color: var(--input-text);
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s;
+        }
+        
+        .suggestion-chip:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .suggestions-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .info-text {
+            font-size: 12px;
+            color: var(--info-text);
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-content">
+                <img src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png" alt="Joule Logo">
+                <div>
+                    <h1>Joule</h1>
+                    <p>Your Sustainability Assistant</p>
+                </div>
+            </div>
+            <button class="dark-mode-toggle" id="dark-mode-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="welcome-message">
+                <p>🌿 Welcome to Joule! Ask me about sustainability, walking benefits, or calculate energy from steps!</p>
+            </div>
+            
+            <div class="suggestions-container">
+                <div class="suggestion-chip" onclick="sendSuggestion('How can I be more eco-friendly?')">How can I be more eco-friendly?</div>
+                <div class="suggestion-chip" onclick="sendSuggestion('Calculate energy for 5000 steps')">Calculate energy for 5000 steps</div>
+                <div class="suggestion-chip" onclick="sendSuggestion('Tips to save energy at home')">Tips to save energy at home</div>
+            </div>
+            
+            <div class="info-text">
+                Try: "steps 10000" to calculate energy from walking
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function appendMessage(text, isReceived) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isReceived ? 'received' : 'sent'}`;
+            
+            // Format response with emojis and line breaks
+            const formattedText = text.replace(/\n/g, '<br>');
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.innerHTML = `
+                ${formattedText}
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
+            
+            if (message === '') return;
+            
+            appendMessage(message, false);
+            userInput.value = '';
+            
+            showTypingIndicator();
+            
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+                appendMessage(data.response, true);
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                appendMessage("Sorry, I'm having trouble connecting. Please try again later.", true);
+                console.error('Error:', error);
+            });
+        }
+        
+        function sendSuggestion(text) {
+            document.getElementById('user-input').value = text;
+            sendMessage();
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        // Dark mode toggle functionality
+        document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+        
+        // Initial greeting from Joule
+        window.onload = function() {
+            setTimeout(() => {
+                appendMessage("Hi there! I'm Joule, your sustainability assistant. 🌍 I can help you with eco-friendly tips, walking benefits, and even calculate energy from your steps! How can I help you today?", true);
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
