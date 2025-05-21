@@ -7,7 +7,7 @@ app = Flask(__name__, static_folder=".", static_url_path="")
 CORS(app)
 
 # Replace with your real API key
-genai.configure(api_key="AIzaSyAo-b7NB05IprmJZ6t0PTPL6G8ifahvG9I")
+genai.configure(api_key="AIzaSyBSJ9img3nSQd630pr1Nv5QVDFDE4VbRx4")
 
 model = genai.GenerativeModel(
     "gemini-1.5-flash",
