@@ -2,12 +2,21 @@ from flask import Flask, request, jsonify, send_from_directory
 import google.generativeai as genai
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load from .env
+
+
+
+
+
 
 app = Flask(__name__, static_folder=".", static_url_path="")
 CORS(app)
 
 # Replace with your real API key
-genai.configure(api_key="AIzaSyBSJ9img3nSQd630pr1Nv5QVDFDE4VbRx4")
+genai.configure(api_key = os.getenv("API_KEY"))
 
 model = genai.GenerativeModel(
     "gemini-1.5-flash",

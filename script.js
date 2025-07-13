@@ -1,5 +1,5 @@
 // Configuration
-const esp32Endpoint = "http://172.17.5.131/data";                      //  http://172.17.7.36     //http://192.168.161.54
+const esp32Endpoint = "http://192.168.177.54/data";                      //  http://172.17.7.36     //http://192.168.161.54
 const updateInterval = 1000; // 1 second
 const resistance = 2200; // 2.2kΩ
 const energyTimeWindow = 10; // seconds for energy calculation
